@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore .EaTestAutomation/EaTestAutomation.sln
+      run: dotnet restore .https://github.com/qaushakiran/EaTestAutomation/blob/main/EaTestAutomation/EaTestAutomation.sln
     - name: Build
       run: dotnet build --no-restore
     - name: Install powershell
