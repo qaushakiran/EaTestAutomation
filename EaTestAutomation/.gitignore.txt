@@ -1,0 +1,29 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.VC.db
+*.VC.VC.opendb
+
+# IDEs
+.idea/
+*.swp
+*.swo
+
+# Build results
+Debug/
+Release/
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Application config
+appsettings.json
+appsettings.*.json
