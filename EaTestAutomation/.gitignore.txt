@@ -23,7 +23,3 @@ node_modules/
 # OS files
 .DS_Store
 Thumbs.db
-
-# Application config
-appsettings.json
-appsettings.*.json
