@@ -27,7 +27,8 @@ jobs:
       run: dotnet build EaTestAutomation/EaTestAutomation.sln --no-restore
     - name: Install powershell
       uses: cakhanif/action-install-powershell@v1
-    - name: Ensure browsers are installed
-      run: pwsh ${{github.workspace}}/EaApplicationTest/bin/Debug/net8.0/playwright.ps1 install --with-dependencies      
+    - name: Install Playwright
+        # Path is now relative to the working-directory set above
+        run: pwsh ${{github.workspace}}/EaApplicationTest/bin/Debug/net8.0/playwright.ps1 install --with-deps
     - name: Test
       run: dotnet test --no-build --verbosity normal
