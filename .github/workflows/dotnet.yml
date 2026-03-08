@@ -28,6 +28,6 @@ jobs:
     - name: Install powershell
       uses: cakhanif/action-install-powershell@v1
     - name: Install Playwright
-      run: pwsh ${{github.workspace}}/EaApplicationTest/bin/Debug/net7.0/playwright.ps1 install --with-deps
+      run: pwsh ${{github.workspace}}/EaTestAutomation/EaApplicationTest/bin/Debug/net7.0/playwright.ps1 install --with-deps
     - name: Test
       run: dotnet test --no-build --verbosity normal
