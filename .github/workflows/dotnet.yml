@@ -24,7 +24,7 @@ jobs:
       run: dotnet restore EaTestAutomation/EaTestAutomation.sln
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build EaTestAutomation/EaTestAutomation.sln --no-restore
     - name: Install powershell
       uses: cakhanif/action-install-powershell@v1
     - name: Ensure browsers are installed
