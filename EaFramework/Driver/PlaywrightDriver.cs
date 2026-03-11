@@ -8,6 +8,7 @@ public class PlaywrightDriver : IDisposable, IPlaywrightDriver
     private readonly AsyncLazy<IBrowser> _browser;
     private readonly AsyncLazy<IBrowserContext> _browserContext;
     private readonly AsyncLazy<IPage> _page;
+    private readonly AsyncLazy<IAPIRequestContext> _apiRequestContext;
     private readonly IPlaywrightDriverInitializer _playwrightDriverInitializer;
     private readonly TestSettings _testSettings;
     private bool _isDisposed;
@@ -20,6 +21,7 @@ public class PlaywrightDriver : IDisposable, IPlaywrightDriver
         _browser = new AsyncLazy<IBrowser>(InitializePlaywright);
         _browserContext = new AsyncLazy<IBrowserContext>(CreateBrowserContext);
         _page = new AsyncLazy<IPage>(CreatePageAsync);
+        _apiRequestContext = new AsyncLazy<IAPIRequestContext>(CreateApiContext);
     }
 
     public Task<IPage> Page => _page.Value;
@@ -27,21 +29,7 @@ public class PlaywrightDriver : IDisposable, IPlaywrightDriver
     public Task<IBrowser> Browser => _browser.Value;
 
     public Task<IBrowserContext> BrowserContext => _browserContext.Value;
-
-    public void Dispose()
-    {
-        if (_isDisposed) return;
-
-        if (_browser.IsValueCreated)
-            Task.Run(async () =>
-            {
-                await (await Browser).CloseAsync();
-                await (await Browser).DisposeAsync();
-            });
-
-        _isDisposed = true;
-    }
-
+    public Task<IAPIRequestContext> ApiRequestContext => _apiRequestContext.Value;
 
     private async Task<IBrowser> InitializePlaywright()
     {
@@ -55,6 +43,17 @@ public class PlaywrightDriver : IDisposable, IPlaywrightDriver
         };
     }
 
+    private async Task<IAPIRequestContext> CreateApiContext()
+    {
+        var playwright = await Playwright.CreateAsync();
+        return await playwright.APIRequest.NewContextAsync(new APIRequestNewContextOptions()
+        {
+            BaseURL = _testSettings.ApplicationAPIUrl,
+            IgnoreHTTPSErrors = true
+        });
+    }
+
+
 
     private async Task<IPage> CreatePageAsync()
     {
@@ -64,5 +63,22 @@ public class PlaywrightDriver : IDisposable, IPlaywrightDriver
     private async Task<IBrowserContext> CreateBrowserContext()
     {
         return await (await _browser).NewContextAsync();
+    }
+    public void Dispose()
+    {
+        if (_isDisposed) return;
+
+        if (_browser.IsValueCreated)
+            Task.Run(async () =>
+            {
+                await (await Browser).CloseAsync();
+                await (await Browser).DisposeAsync();
+            });
+        if (_apiRequestContext.IsValueCreated)
+            Task.Run(async () =>
+            {
+                await (await ApiRequestContext).DisposeAsync();
+            });
+        _isDisposed = true;
     }
 }
